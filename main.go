@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"context"
+	"math/big"
+	"math"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/common"
@@ -36,4 +38,10 @@ func main() {
 	}
 
 	fmt.Printf("Raw WEI balance is %s\n", balance)
+
+	fbalance := new(big.Float)
+	fbalance.SetString(balance.String())
+	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
+
+	fmt.Printf("ETH balance is %f\n", ethValue)
 }
