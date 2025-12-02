@@ -10,6 +10,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 )
 
 func main() {
@@ -60,7 +61,13 @@ func main() {
 	formatted := t.Format("02 Jan 2006 15:04:05")
 	fmt.Printf("Block creation time is %s\n", formatted)
 
-	// Fetch all txs in a block
+	// We need chain id to get the signer of txs
+	chainId, err := client.NetworkID(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Fetch all txs in a block with their respective data
 	fmt.Println("-----")
 	for _, tx := range block.Transactions() {
 		fmt.Printf("Tx hash is: %s\n", tx.Hash().Hex())
@@ -70,8 +77,16 @@ func main() {
 		// 18 decimals of precision
 		fmt.Printf("Tx value in ETH is: %s\n", new(big.Float).Quo(txValuef, big.NewFloat(math.Pow10(18))).Text('f', 18))
 		fmt.Printf("Tx gas price in ETH is: %s\n", new(big.Float).Quo(gasPricef, big.NewFloat(math.Pow10(18))).Text('f', 18))
+
 		fmt.Printf("Tx gas is: %d\n", tx.Gas())
 		fmt.Printf("Tx nonce is: %d\n", tx.Nonce())
+		fmt.Printf("Tx to address is: %s\n", tx.To().Hex())
+		fmt.Printf("Tx data is: %x\n", tx.Data())
+
+		if from, err := types.Sender(types.NewLondonSigner(chainId), tx); err == nil {
+    		fmt.Printf("Tx from address is: %s\n", from.Hex())
+		}
+
 		fmt.Println("-----")
 	}
 }
