@@ -48,7 +48,7 @@ func TestReadEthValue(t *testing.T) {
 	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
 
 	// cmp returns -1 on negative
-	if ethValue.Cmp(big.NewFloat(0)) != -1 {
+	if ethValue.Cmp(big.NewFloat(0)) == -1 {
 		t.Fatalf("ETH balance should not be negative")
 	}
 }
