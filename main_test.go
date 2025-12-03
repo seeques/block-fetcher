@@ -52,3 +52,25 @@ func TestReadEthValue(t *testing.T) {
 		t.Fatalf("ETH balance should not be negative")
 	}
 }
+
+func TestFetchTxValueNonNegative(t *testing.T) {
+	client := setUpConnection(t)
+	defer client.Close()
+
+	block, err := client.BlockByNumber(context.Background(), nil)
+	if err != nil {
+		t.Fatalf("Failed to fetch latest block: %v", err)
+	}
+
+	txs := block.Transactions()
+	if len(txs) == 0 {
+		t.Skip("No txs in the latest block to test")
+	}
+
+	tx := txs[0]
+	value := tx.Value()
+
+	if value.Sign() == -1 {
+		t.Fatalf("Transaction value should not be negative")
+	}
+}
