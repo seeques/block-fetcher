@@ -91,6 +91,7 @@ var txsCmd = &cobra.Command{
 					log.Printf("Failed to fetch receipt for tx %s: %v", tx.Hash().Hex(), err)
 				} else {
 					fmt.Printf("Receipt Status: %d\n", receipt.Status)
+					// TODO: think about better formatting for logs
 					fmt.Printf("Logs: %v\n", receipt.Logs)
 				}
 			}
