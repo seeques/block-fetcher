@@ -14,6 +14,7 @@ import (
 )
 
 var blockNumber int64
+var showReceipts bool
 
 var txsCmd = &cobra.Command{
 	Use: "txs",
@@ -82,6 +83,17 @@ var txsCmd = &cobra.Command{
 			} else {
 				fmt.Println("Data: <empty>")
 			}
+
+			// Show receipts if flag is set
+			if showReceipts {
+				receipt, err := client.TransactionReceipt(context.Background(), tx.Hash())
+				if err != nil {
+					log.Printf("Failed to fetch receipt for tx %s: %v", tx.Hash().Hex(), err)
+				} else {
+					fmt.Printf("Receipt Status: %d\n", receipt.Status)
+					fmt.Printf("Logs: %v\n", receipt.Logs)
+				}
+			}
 			fmt.Println("-----")
 		}
 	},
@@ -90,4 +102,5 @@ var txsCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(txsCmd)
 	txsCmd.Flags().Int64VarP(&blockNumber, "block", "b", -1, "Block Number to fetch, -1 for latest")
+	txsCmd.Flags().BoolVarP(&showReceipts, "receipts", "r", false, "Show transaction receipts")
 }
