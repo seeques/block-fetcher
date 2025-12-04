@@ -17,9 +17,9 @@ var blockNumber int64
 var showReceipts bool
 
 var txsCmd = &cobra.Command{
-	Use: "txs",
+	Use:   "txs",
 	Short: "Fetches transaction data from block",
-	Long: `Fetches transaction data from a specified block or the latest block as default`,
+	Long:  `Fetches transaction data from a specified block or the latest block as default`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client, err := ethclient.Dial(rpcURL)
 		if err != nil {
@@ -30,7 +30,7 @@ var txsCmd = &cobra.Command{
 		fmt.Println("Connected to:", rpcURL)
 		fmt.Println("-----")
 
-		var block *types.Block 
+		var block *types.Block
 
 		if blockNumber < 0 {
 			// nil for latest
@@ -41,10 +41,10 @@ var txsCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Failed to fetch block: %v", err)
 		}
-		
+
 		fmt.Printf("Block Number: %d\n", block.Number().Uint64())
 		fmt.Println("-----")
-		
+
 		// We need chainID to get the signer
 		chainID, err := client.NetworkID(context.Background())
 		if err != nil {
@@ -73,10 +73,10 @@ var txsCmd = &cobra.Command{
 			} else {
 				fmt.Println("To: Contract Creation")
 			}
-			
+
 			fmt.Printf("Gas Limit: %d\n", tx.Gas())
 			fmt.Printf("Nonce: %d\n", tx.Nonce())
-			
+
 			txData := tx.Data()
 			if len(txData) > 0 {
 				fmt.Printf("Data: 0x%x\n", txData)

@@ -29,5 +29,3 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().StringVar(&rpcURL, "rpc", "http://localhost:8545", "RPC URL")
 }
-
-
