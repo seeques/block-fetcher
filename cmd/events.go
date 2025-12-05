@@ -36,6 +36,10 @@ var eventsCmd = &cobra.Command{
 		}
 		defer client.Close()
 
+		if contractAddress == "" {
+			log.Fatalf("Contract address is required")
+		}
+
 		contractAddr := common.HexToAddress(contractAddress)
 
 		var b *big.Int

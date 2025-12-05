@@ -1,3 +1,4 @@
 .env
 block-fetcher
 go.sum
+cache/
