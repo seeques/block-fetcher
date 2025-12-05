@@ -55,10 +55,10 @@ var eventsCmd = &cobra.Command{
 
 		for _, vLog := range logs {
 			if vLog.Topics[0] == logTransferSigHash {
-				fmt.Printf("Log Block Number: %d\n", vLog.BlockNumber)
-				fmt.Printf("Log Index: %d\n", vLog.Index)
+				fmt.Printf("Block Number: %d\n", vLog.BlockNumber)
+				fmt.Printf("Index: %d\n", vLog.Index)
 
-				fmt.Printf("Log name: %s\n", "Transfer")
+				fmt.Printf("Event name: %s\n", "Transfer")
 
 				var transferEvent TransferEvent
 				// Unpack can only unpack non-indexed fields of event
