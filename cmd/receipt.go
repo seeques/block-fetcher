@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/seeques/block-fetcher/internal/client"
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +15,9 @@ var receiptCmd = &cobra.Command{
 	Short: "Fetches receipt from transaction hash",
 	Long:  `Fetches receipt data from a specified transaction hash`,
 	Run: func(cmd *cobra.Command, args []string) {
-		client, err := ethclient.Dial(rpcURL)
+		client, err := client.ConnectToClient(rpcURL)
 		if err != nil {
-			log.Fatalf("Failed to connect to the Ethereum client: %v", err)
+			log.Fatal(err)
 		}
 		defer client.Close()
 

@@ -9,7 +9,7 @@ import (
 	// "time"
 
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/seeques/block-fetcher/internal/client"
 	"github.com/spf13/cobra"
 )
 
@@ -21,9 +21,9 @@ var txsCmd = &cobra.Command{
 	Short: "Fetches transaction data from block",
 	Long:  `Fetches transaction data from a specified block or the latest block as default`,
 	Run: func(cmd *cobra.Command, args []string) {
-		client, err := ethclient.Dial(rpcURL)
+		client, err := client.ConnectToClient(rpcURL)
 		if err != nil {
-			log.Fatalf("Failed to connect to the Ethereum client: %v", err)
+			log.Fatal(err)
 		}
 		defer client.Close()
 
