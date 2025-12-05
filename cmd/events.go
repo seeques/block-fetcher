@@ -11,8 +11,9 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethclient"
 	contracts "github.com/seeques/block-fetcher/contracts"
+	"github.com/seeques/block-fetcher/internal/client"
+	"github.com/seeques/block-fetcher/internal/fetcher"
 	"github.com/spf13/cobra"
 )
 
@@ -30,10 +31,8 @@ var eventsCmd = &cobra.Command{
 	Short: "Fetches ERC20 transfer event from one block",
 	Long:  `Fetches ERC20 transfer event from a specified contract address from one block, latest by default`,
 	Run: func(cmd *cobra.Command, args []string) {
-		client, err := ethclient.Dial(rpcURL)
-		if err != nil {
-			log.Fatalf("Failed to connect to the Ethereum client: %v", err)
-		}
+		client := client.ConnectToClient(rpcURL)
+
 		defer client.Close()
 
 		if contractAddress == "" {
@@ -42,19 +41,7 @@ var eventsCmd = &cobra.Command{
 
 		contractAddr := common.HexToAddress(contractAddress)
 
-		var b *big.Int
-
-		// default to latest block if 0
-		if block == 0 {
-			// Get latest block number
-			header, err := client.HeaderByNumber(context.Background(), nil)
-			if err != nil {
-				log.Fatalf("Failed to get latest block header: %v", err)
-			}
-			b = header.Number
-		} else {
-			b = big.NewInt(block)
-		}
+		b := fetcher.GetBlock(client, block)
 
 		query := ethereum.FilterQuery{
 			// Topics == nil (default) matches all topics
