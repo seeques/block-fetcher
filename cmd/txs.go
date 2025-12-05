@@ -6,7 +6,6 @@ import (
 	"log"
 	"math"
 	"math/big"
-	// "time"
 
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/seeques/block-fetcher/internal/client"

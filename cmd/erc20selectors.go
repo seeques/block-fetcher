@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"log"
-	"bytes"
 
 	"github.com/seeques/block-fetcher/internal/decoder"
 	"github.com/spf13/cobra"
@@ -26,25 +26,25 @@ var selectorsCmd = &cobra.Command{
 		}
 
 		switch {
-			case bytes.Equal(selector, decoder.ComputeSelector("transfer(address,uint256)")):
-				fmt.Printf("Method: %s\n", methodName)
-				fmt.Printf("To: %v\n", args[0])
-				fmt.Printf("Value: %v\n", args[1])
-			case bytes.Equal(selector, decoder.ComputeSelector("approve(address,uint256)")):
-				fmt.Printf("Method: %s\n", methodName)
-				fmt.Printf("Spender: %v\n", args[0])
-				fmt.Printf("Value: %v\n", args[1])
-			case bytes.Equal(selector, decoder.ComputeSelector("transferFrom(address,address,uint256)")):
-				fmt.Printf("Method: %s\n", methodName)
-				fmt.Printf("From: %v\n", args[0])
-				fmt.Printf("To: %v\n", args[1])
-				fmt.Printf("Value: %v\n", args[2])
-			default:
-				fmt.Printf("Method: %s\n", methodName)
-				fmt.Println("Arguments:")
-				for i, arg := range args {
-					fmt.Printf("Arg %d: %v\n", i, arg)
-				}
+		case bytes.Equal(selector, decoder.ComputeSelector("transfer(address,uint256)")):
+			fmt.Printf("Method: %s\n", methodName)
+			fmt.Printf("To: %v\n", args[0])
+			fmt.Printf("Value: %v\n", args[1])
+		case bytes.Equal(selector, decoder.ComputeSelector("approve(address,uint256)")):
+			fmt.Printf("Method: %s\n", methodName)
+			fmt.Printf("Spender: %v\n", args[0])
+			fmt.Printf("Value: %v\n", args[1])
+		case bytes.Equal(selector, decoder.ComputeSelector("transferFrom(address,address,uint256)")):
+			fmt.Printf("Method: %s\n", methodName)
+			fmt.Printf("From: %v\n", args[0])
+			fmt.Printf("To: %v\n", args[1])
+			fmt.Printf("Value: %v\n", args[2])
+		default:
+			fmt.Printf("Method: %s\n", methodName)
+			fmt.Println("Arguments:")
+			for i, arg := range args {
+				fmt.Printf("Arg %d: %v\n", i, arg)
+			}
 		}
 	},
 }

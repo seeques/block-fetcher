@@ -3,17 +3,12 @@ package fetcher
 import (
 	"context"
 	"fmt"
-	// "log"
 	"math/big"
-	// "strings"
 
 	"github.com/ethereum/go-ethereum"
-	// "github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
-	// "github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	// contracts "github.com/seeques/block-fetcher/contracts"
 )
 
 func GetBlockNumber(client *ethclient.Client, block int64) (*big.Int, error) {
