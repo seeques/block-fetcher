@@ -1,15 +1,15 @@
 package client
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ConnectToClient(rpcURL string) (*ethclient.Client) {
+func ConnectToClient(rpcURL string) (*ethclient.Client, error) {
 	client, err := ethclient.Dial(rpcURL)
 	if err != nil {
-		log.Fatalf("failed to connect to the Ethereum client: %v", err)
+		return nil, fmt.Errorf("failed to connect to the Ethereum client: %v", err)
 	}
-	return client
+	return client, nil
 }

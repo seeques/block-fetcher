@@ -22,7 +22,7 @@ var selectorsCmd = &cobra.Command{
 
 		methodName, selector, args, err := decoder.DecodeData(inputData)
 		if err != nil {
-			log.Fatalf("Failed to decode data: %v", err)
+			log.Fatal(err)
 		}
 
 		switch {
