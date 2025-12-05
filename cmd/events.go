@@ -1,13 +1,11 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"math/big"
 	"strings"
 
-	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -31,30 +29,20 @@ var eventsCmd = &cobra.Command{
 	Short: "Fetches ERC20 transfer event from one block",
 	Long:  `Fetches ERC20 transfer event from a specified contract address from one block, latest by default`,
 	Run: func(cmd *cobra.Command, args []string) {
-		client := client.ConnectToClient(rpcURL)
-
+		client, err := client.ConnectToClient(rpcURL)
+		if err != nil {
+			log.Fatal(err)
+		}
 		defer client.Close()
 
-		if contractAddress == "" {
-			log.Fatalf("Contract address is required")
-		}
-
-		contractAddr := common.HexToAddress(contractAddress)
-
-		b := fetcher.GetBlock(client, block)
-
-		query := ethereum.FilterQuery{
-			// Topics == nil (default) matches all topics
-			Addresses: []common.Address{
-				contractAddr,
-			},
-			FromBlock: b,
-			ToBlock:   b,
-		}
-
-		logs, err := client.FilterLogs(context.Background(), query)
+		b, err := fetcher.GetBlock(client, block)
 		if err != nil {
-			log.Fatalf("Failed to retrieve logs: %v", err)
+			log.Fatal(err)
+		}
+
+		logs, err := fetcher.GetLogs(client, contractAddress, b)
+		if err != nil {
+			log.Fatal(err)
 		}
 
 		contractABI, err := abi.JSON(strings.NewReader(string(contracts.ContractsMetaData.ABI)))
