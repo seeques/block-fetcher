@@ -3,12 +3,9 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"strings"
 	"bytes"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	contracts "github.com/seeques/block-fetcher/contracts"
+	"github.com/seeques/block-fetcher/internal/decoder"
 	"github.com/spf13/cobra"
 )
 
@@ -23,37 +20,27 @@ var selectorsCmd = &cobra.Command{
 			log.Fatalf("Input data is too short to contain a selector")
 		}
 
-		contractABI, err := abi.JSON(strings.NewReader(contracts.ContractsMetaData.ABI))
+		methodName, selector, args, err := decoder.DecodeData(inputData)
 		if err != nil {
-			log.Fatalf("Failed to parse contract ABI: %v", err)
-		}
-
-		selector := inputData[:4]
-		method, err := contractABI.MethodById(selector)
-		if err != nil {
-			log.Fatalf("Failed to find method for selector %x: %v", selector, err)
-		}
-
-		fmt.Printf("Function: %s\n", method.Name)
-
-		argsData := inputData[4:]
-		args, err := method.Inputs.Unpack(argsData)
-		if err != nil {
-			log.Fatalf("Failed to unpack arguments: %v", err)
+			log.Fatalf("Failed to decode data: %v", err)
 		}
 
 		switch {
-			case bytes.Equal(selector, crypto.Keccak256([]byte("transfer(address,uint256)"))[:4]):
+			case bytes.Equal(selector, decoder.ComputeSelector("transfer(address,uint256)")):
+				fmt.Printf("Method: %s\n", methodName)
 				fmt.Printf("To: %v\n", args[0])
 				fmt.Printf("Value: %v\n", args[1])
-			case bytes.Equal(selector, crypto.Keccak256([]byte("approve(address,uint256)"))[:4]):
+			case bytes.Equal(selector, decoder.ComputeSelector("approve(address,uint256)")):
+				fmt.Printf("Method: %s\n", methodName)
 				fmt.Printf("Spender: %v\n", args[0])
 				fmt.Printf("Value: %v\n", args[1])
-			case bytes.Equal(selector, crypto.Keccak256([]byte("transferFrom(address,address,uint256)"))[:4]):
+			case bytes.Equal(selector, decoder.ComputeSelector("transferFrom(address,address,uint256)")):
+				fmt.Printf("Method: %s\n", methodName)
 				fmt.Printf("From: %v\n", args[0])
 				fmt.Printf("To: %v\n", args[1])
 				fmt.Printf("Value: %v\n", args[2])
 			default:
+				fmt.Printf("Method: %s\n", methodName)
 				fmt.Println("Arguments:")
 				for i, arg := range args {
 					fmt.Printf("Arg %d: %v\n", i, arg)
