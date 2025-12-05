@@ -16,7 +16,7 @@ import (
 	// contracts "github.com/seeques/block-fetcher/contracts"
 )
 
-func GetBlock(client *ethclient.Client, block int64) (*big.Int, error) {
+func GetBlockNumber(client *ethclient.Client, block int64) (*big.Int, error) {
 	var b *big.Int
 	// default to latest block if 0
 	if block == 0 {
@@ -36,7 +36,7 @@ func GetLogs(client *ethclient.Client, contractAddress string, block *big.Int) (
 	if contractAddress == "" {
 		return nil, fmt.Errorf("Contract address is required")
 	}
-	
+
 	contractAddr := common.HexToAddress(contractAddress)
 
 	query := ethereum.FilterQuery{
@@ -52,4 +52,20 @@ func GetLogs(client *ethclient.Client, contractAddress string, block *big.Int) (
 		return nil, fmt.Errorf("Failed to retrieve logs: %w", err)
 	}
 	return logs, nil
+}
+
+func GetBlock(client *ethclient.Client, blockNumber int64) (*types.Block, error) {
+	var block *types.Block
+	var err error
+
+	if blockNumber < 0 {
+		// nil for latest
+		block, err = client.BlockByNumber(context.Background(), nil)
+	} else {
+		block, err = client.BlockByNumber(context.Background(), big.NewInt(blockNumber))
+	}
+	if err != nil {
+		return nil, fmt.Errorf("Failed to fetch block: %w", err)
+	}
+	return block, nil
 }

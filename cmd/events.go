@@ -35,7 +35,7 @@ var eventsCmd = &cobra.Command{
 		}
 		defer client.Close()
 
-		b, err := fetcher.GetBlock(client, block)
+		b, err := fetcher.GetBlockNumber(client, block)
 		if err != nil {
 			log.Fatal(err)
 		}

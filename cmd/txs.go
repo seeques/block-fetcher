@@ -10,6 +10,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/seeques/block-fetcher/internal/client"
+	"github.com/seeques/block-fetcher/internal/fetcher"
 	"github.com/spf13/cobra"
 )
 
@@ -30,16 +31,9 @@ var txsCmd = &cobra.Command{
 		fmt.Println("Connected to:", rpcURL)
 		fmt.Println("-----")
 
-		var block *types.Block
-
-		if blockNumber < 0 {
-			// nil for latest
-			block, err = client.BlockByNumber(context.Background(), nil)
-		} else {
-			block, err = client.BlockByNumber(context.Background(), big.NewInt(blockNumber))
-		}
+		block, err := fetcher.GetBlock(client, blockNumber)
 		if err != nil {
-			log.Fatalf("Failed to fetch block: %v", err)
+			log.Fatal(err)
 		}
 
 		fmt.Printf("Block Number: %d\n", block.Number().Uint64())
