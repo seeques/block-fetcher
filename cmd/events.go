@@ -46,7 +46,12 @@ var eventsCmd = &cobra.Command{
 
 		// default to latest block if 0
 		if block == 0 {
-			b = nil
+			// Get latest block number
+			header, err := client.HeaderByNumber(context.Background(), nil)
+			if err != nil {
+				log.Fatalf("Failed to get latest block header: %v", err)
+			}
+			b = header.Number
 		} else {
 			b = big.NewInt(block)
 		}
