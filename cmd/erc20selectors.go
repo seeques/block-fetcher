@@ -1,14 +1,12 @@
 package cmd
 
 import (
-	// "context"
 	"fmt"
 	"log"
 	"strings"
+	"bytes"
 
-	// "github.com/ethereum/go-ethereum/common"
-	// "github.com/ethereum/go-ethereum/ethclient"
-	// "github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	contracts "github.com/seeques/block-fetcher/contracts"
 	"github.com/spf13/cobra"
@@ -44,8 +42,22 @@ var selectorsCmd = &cobra.Command{
 			log.Fatalf("Failed to unpack arguments: %v", err)
 		}
 
-		for _, arg := range args {
-			fmt.Printf("Arg: %v\n", arg)
+		switch {
+			case bytes.Equal(selector, crypto.Keccak256([]byte("transfer(address,uint256)"))[:4]):
+				fmt.Printf("To: %v\n", args[0])
+				fmt.Printf("Value: %v\n", args[1])
+			case bytes.Equal(selector, crypto.Keccak256([]byte("approve(address,uint256)"))[:4]):
+				fmt.Printf("Spender: %v\n", args[0])
+				fmt.Printf("Value: %v\n", args[1])
+			case bytes.Equal(selector, crypto.Keccak256([]byte("transferFrom(address,address,uint256)"))[:4]):
+				fmt.Printf("From: %v\n", args[0])
+				fmt.Printf("To: %v\n", args[1])
+				fmt.Printf("Value: %v\n", args[2])
+			default:
+				fmt.Println("Arguments:")
+				for i, arg := range args {
+					fmt.Printf("Arg %d: %v\n", i, arg)
+				}
 		}
 	},
 }
