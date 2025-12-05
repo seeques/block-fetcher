@@ -27,3 +27,11 @@ block-fetcher txs --block 1 -r true
 ```bash
 block-fetcher receipt 0xYOUR_TX_HASH
 ```
+
+### Fetch ERC-20 transfer events
+```bash
+# Latest block by default
+block-fetcher --address 0xERC20_ADDR
+
+# Specific block
+block-fetcher --address 0xERC20_ADDR --block 12345
