@@ -56,7 +56,7 @@ var txsCmd = &cobra.Command{
 			gasPriceEth := new(big.Float).Quo(gasPricef, big.NewFloat(math.Pow10(18)))
 			fmt.Printf("Gas Price: %s Eth\n", gasPriceEth.Text('f', 18))
 
-			if from, err := types.Sender(types.NewLondonSigner(chainID), tx); err == nil {
+			if from, err := types.Sender(types.NewPragueSigner(chainID), tx); err == nil {
 				fmt.Printf("From: %s\n", from.Hex())
 			}
 
